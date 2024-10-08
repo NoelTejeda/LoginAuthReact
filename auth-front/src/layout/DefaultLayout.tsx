@@ -1,9 +1,9 @@
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
+import React from "react";
 
 interface DefaultLayoutProps {
-  children: React.ReactNode
+  children?: React.ReactNode;
 }
-
 export default function DefaultLayout({ children }: DefaultLayoutProps) {
   return (
     <>
@@ -11,7 +11,7 @@ export default function DefaultLayout({ children }: DefaultLayoutProps) {
         <nav>
           <ul>
             <li>
-              <Link to="/">Home</Link>
+              <Link to="/">Login</Link>
             </li>
             <li>
               <Link to="/signup">Signup</Link>
@@ -20,9 +20,7 @@ export default function DefaultLayout({ children }: DefaultLayoutProps) {
         </nav>
       </header>
 
-      <main>
-        {children}
-      </main>
+      <main>{children}</main>
     </>
-  )
+  );
 }

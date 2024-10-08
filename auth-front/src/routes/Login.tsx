@@ -1,61 +1,76 @@
-
-import { useState } from "react"
-import { Navigate } from "react-router-dom"
-import { useAuth } from "../auth/AuthProvider"
-import "/img/login.gif"
-import '../login.css'
-
+import { useState } from "react";
+import DefaultLayout from "../layout/DefaultLayout";
+import { useAuth } from "../auth/AuthProvider";
+import { Navigate } from "react-router-dom";
+import { AuthResponse, AuthResponseError } from "../types/types";
 
 export default function Login() {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorResponse, setErrorResponse] = useState("");
 
-  const auth = useAuth()
+  const auth = useAuth();
 
+  function handleChange(e: React.ChangeEvent) {
+    const { name, value } = e.target as HTMLInputElement;
+    if (name === "username") {
+      setUsername(value);
+    }
+    if (name === "password") {
+      setPassword(value);
+    }
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    // auth.setIsAuthenticated(true);
+    try {
+      const response = await fetch("http://localhost:3000/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+      if (response.ok) {
+        const json = (await response.json()) as AuthResponse;
+        console.log(json);
+
+        if (json.body.accessToken && json.body.refreshToken) {
+          auth.saveUser(json);
+        }
+      } else {
+        const json = (await response.json()) as AuthResponseError;
+
+        setErrorResponse(json.body.error);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
   if (auth.isAuthenticated) {
-    return <Navigate to="/Dashboard" />
+    return <Navigate to="/dashboard" />;
   }
   return (
+    <DefaultLayout>
+      <form onSubmit={handleSubmit} className="form">
+        <h1>Login</h1>
+        {!!errorResponse && <div className="errorMessage">{errorResponse}</div>}
+        <label>Username</label>
+        <input
+          name="username"
+          type="text"
+          onChange={handleChange}
+          value={username}
+        />
+        <label>Password</label>
+        <input
+          type="password"
+          name="password"
+          onChange={handleChange}
+          value={password}
+        />
 
-
-    <div className="contenedores">
-      <div className="contenedor1">
-        <img className="login_image"
-          src="/img/login.gif"
-          alt="login_image"
-          height="300px"
-          width="300px" />
-        <p>Inicie sesión para acceder a todas las <br />funcionalidades de nuestra pagina!</p>
-      </div>
-      <form className="form" method="post" action="#">
-
-        <div className="contenedor2">
-          <p className="txtlogin">Iniciar Sesión</p>
-          <br />
-          <label htmlFor="email">Username</label>
-          <input type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            id="email"
-            name="email"
-            placeholder="Username"
-            required />
-          <br />
-          <label htmlFor="password">Contraseña</label>
-          <input type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            name="password"
-            placeholder="Ingrese su contraseña"
-            required />
-          <button type="submit">Entrar</button>
-          <a href="#">Olvidó las credenciales? Click aquí</a>
-          <br />
-          <p>No tiene cuenta? Simple!</p>
-          <a href="signup.html">Crear cuenta ahora</a>
-        </div>
+        <button>Login</button>
       </form>
-    </div>
-  )
+    </DefaultLayout>
+  );
 }

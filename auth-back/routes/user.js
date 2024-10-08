@@ -1,7 +1,12 @@
-const router = require("express").Router()
+const express = require("express");
+const { jsonResponse } = require("../lib/jsonResponse");
+const log = require("../lib/trace");
+const router = express.Router();
 
-router.get("/", (req, res) => {
-  res.send("user")
-})
+router.get("/", async function (req, res, next) {
+  log.info("user", req.user);
 
-module.exports = router
+  res.json(jsonResponse(200, req.user));
+});
+
+module.exports = router;

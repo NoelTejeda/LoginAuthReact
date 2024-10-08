@@ -45,6 +45,8 @@ export default function ProtectedRoute() {
   return isAuth ? <Outlet /> : <Navigate to="/" />;
 }
 ```
+- Outlet: Este componente actúa como un marcador de posición para los componentes secundarios en las rutas anidadas. Cuando defines rutas anidadas en tu aplicación, Outlet se utiliza para renderizar el componente correspondiente a la ruta secundaria actual. Es esencialmente un punto de inserción donde se mostrarán los componentes hijos según la ruta que coincida.
+  
 - ahora cambiariamos el main de la siguiente manera:
   
 ```tsx

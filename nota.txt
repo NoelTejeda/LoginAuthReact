@@ -1,0 +1,9 @@
+del video: 
+https://www.youtube.com/watch?v=q4ywr3eZmk0
+CURSO DE LOGIN y REGISTRO COMPLETO CON REACT
+
+
+github
+https://github.com/marcosrivasr/auth-react-node.git
+
+
